@@ -42,7 +42,7 @@ if config.nil?
   config[:username]=gets.chomp
   print "Twitter login: "
   config[:twitter]=gets.chomp
-  print "Update interval(sec): "
+  print "Update interval(sec, recomended >60): "
   config[:interval]=gets.to_i
   config[:lastcheck]=Time.now
 end
@@ -75,6 +75,9 @@ while(true)
     f.close
   rescue SystemExit, Interrupt
     exit(0)
+  rescue Twitter::BadRequest
+    puts "Twitter requests per hour limit exceeded. You need to increase poll \
+interval in your ~/.plurked"
   rescue Exception => e
     STDERR.puts "Got exception #{e.inspect}. Check your internet connection."
   ensure
