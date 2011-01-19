@@ -11,11 +11,12 @@ Plurked monitors your twitter account and reposts new tweets to your plurk.
 
 # Configuring
 Configuration stored in YAML format at ~/.plurked.
-Options
- - key -- your plurk API key. You may use mine or your own.
- - username -- your plurk login
- - password -- your plurk password
- - interval -- interval for checking twitter for new tweets
- - twitter -- twitter account to monitor. Only public accounts are currently supported.
- - lastcheck -- last time twitter was checked for updates and new tweets reposted.
+
+Options:
+ * key -- your plurk API key. You may use mine or your own.
+ * username -- your plurk login
+ * password -- your plurk password
+ * interval -- interval for checking twitter for new tweets
+ * twitter -- twitter account to monitor. Only public accounts are currently supported.
+ * lastcheck -- last time twitter was checked for updates and new tweets reposted.
 
