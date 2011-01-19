@@ -70,7 +70,7 @@ while(true)
     # puts "checking"
     new_tweets = Twitter.user_timeline(config[:twitter]).select{|t| Time.parse(t["created_at"]) > config[:lastcheck]}
     new_tweets.reverse.each do |tweet|
-      plurk.plurk_add :content => tweet[:text], :qualifier => "tweets"
+      plurk.plurk_add :content => tweet[:text] #, :qualifier => "tweets"
       # puts "plurked: "+ tweet.text
     end
     config[:lastcheck]=Time.now
