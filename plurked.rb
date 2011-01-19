@@ -2,8 +2,21 @@
 
 # require 'YAML' # becomes broken after requiring twitter.
 # But twitter somehow loads YAML by itself so really not needed.
+LOCK_FILE = ENV["HOME"]+"/.plurked_lock"
+if File.exist?(LOCK_FILE)
+  STDERR.puts "Already running. If not, please delete ~/.plurked_lock"
+  exit(4) # not terminate() because terminate() deletes lock file. In further code terminate must be used.
+else
+  system "touch "+LOCK_FILE
+end
+
 require 'plurk'
 require 'twitter'
+
+def terminate(code)
+  system "rm "+LOCK_FILE
+  exit(code)
+end
 
 def hidden_gets # inspired by highline gem
   state = `stty -g`
@@ -15,13 +28,13 @@ def hidden_gets # inspired by highline gem
 end
 
 Signal.trap("INT") do
-  exit(0)
+  terminate(0)
 end
 Signal.trap("TERM") do
-  exit(0)
+  terminate(0)
 end
 Signal.trap("KILL") do
-  exit(0)
+  terminate(0)
 end
 
 CONFIG_FILE = "#{ENV["HOME"]}/.plurked"
@@ -44,6 +57,9 @@ if config.nil?
   config[:twitter]=gets.chomp
   print "Update interval(sec, recomended >60): "
   config[:interval]=gets.to_i
+  if config[:interval]==0
+    config[:interval]=60
+  end
   config[:lastcheck]=Time.now
 end
 
@@ -58,7 +74,7 @@ begin
 rescue Exception => e
   STDERR.puts "Exception #{e.inspect} on plurk authorization. \
 Check your configuration file and internet connection."
-  exit(2)
+  terminate(2)
 end
 
 while(true)
@@ -74,7 +90,7 @@ while(true)
     f.write(YAML.dump(config))
     f.close
   rescue SystemExit, Interrupt
-    exit(0)
+    terminate(0)
   rescue Twitter::BadRequest
     puts "Twitter requests per hour limit exceeded. You need to increase poll \
 interval in your ~/.plurked"
