@@ -9,6 +9,10 @@ Plurked monitors your twitter account and reposts new tweets to your plurk.
 	./plurked.rb # first time. it needs your input for configuration file creation.
 	./plurked.rb & # each time system starts. or you may use your desired way to daemonize it.
 
+# Command line options
+
+* `-s/--skip` -- skip tweets written before daemon start.
+
 # Configuring
 Configuration stored in YAML format at ~/.plurked.
 
