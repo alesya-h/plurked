@@ -17,11 +17,9 @@ end
 Signal.trap("INT") do
   exit(0)
 end
-
 Signal.trap("TERM") do
   exit(0)
 end
-
 Signal.trap("KILL") do
   exit(0)
 end
@@ -30,6 +28,7 @@ CONFIG_FILE = "#{ENV["HOME"]}/.plurked"
 if File.exist?(CONFIG_FILE)
   config = YAML.load_file CONFIG_FILE
 end
+# initial configuration
 if config.nil?
   config={}
   print "Your Plurk API key (if no just press Enter): "
@@ -48,16 +47,13 @@ if config.nil?
   config[:lastcheck]=Time.now
 end
 
-plurk = Plurk::Client.new config[:key]
-
-if !config[:password] || config[:password].empty?
-  puts "Enter plurk password"
-  pass = STDIN.gets.chomp
-  config[:password] = pass
+if ARGV.include? "-s" or ARGV.include? "--skip"
+  # skip tweets posted before plurked startup
+  config[:lastcheck]=Time.now
 end
 
-# does not work if put after 'require "twitter"'
 begin
+  plurk = Plurk::Client.new config[:key]
   plurk.login :username => config[:username], :password => config[:password]  
 rescue Exception => e
   STDERR.puts "Exception #{e.inspect} on plurk authorization. \
@@ -67,13 +63,11 @@ end
 
 while(true)
   begin
-    # puts "checking"
     new_tweets = Twitter.user_timeline(config[:twitter]).select do |t|
       Time.parse(t["created_at"]) > config[:lastcheck]
     end
     new_tweets.reverse.each do |tweet|
       plurk.plurk_add :content => tweet[:text] unless tweet[:text].start_with?("@")
-      # puts "plurked: "+ tweet.text
     end
     config[:lastcheck]=Time.now
     f = File.new(CONFIG_FILE,"w")
