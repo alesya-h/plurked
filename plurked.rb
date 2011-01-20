@@ -70,11 +70,12 @@ end
 
 begin
   plurk = Plurk::Client.new config[:key]
-  plurk.login :username => config[:username], :password => config[:password]  
+  plurk.login :username => config[:username], :password => config[:password]
 rescue Exception => e
   STDERR.puts "Exception #{e.inspect} on plurk authorization. \
 Check your configuration file and internet connection."
-  terminate(2)
+  sleep(config[:interval])
+  retry
 end
 
 while(true)

@@ -9,6 +9,12 @@ Plurked monitors your twitter account and reposts new tweets to your plurk.
 	./plurked.rb # first time. it needs your input for configuration file creation.
 	./plurked.rb & # each time system starts. or you may use your desired way to daemonize it.
 
+or for autostart on mac:
+	cd plurked
+	cp Library/LaunchAgents/com.nekotwi.plurked.plist ~/Library/LaunchAgents/
+	open ~/Library/LaunchAgents/com.nekotwi.plurked.plist
+This will start Property List Editor. Edit /Root/ProgramArguments/Item0 so it points to your copy of plurked.rb.
+
 # Command line options
 
 * `-s/--skip` -- skip tweets written before daemon start.
